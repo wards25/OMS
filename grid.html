@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>80 Distinct Light Colors (Dark Font)</title>
+<style>
+  body {
+    background-color: #f0f0f0;
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(10, 100px);
+    gap: 8px;
+    padding: 20px;
+  }
+  .color-box {
+    width: 100px;
+    height: 100px;
+    border-radius: 10px;
+    text-align: center;
+    font-size: 12px;
+    font-weight: bold;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    color: #000; /* dark font */
+    border: 1px solid rgba(0,0,0,0.1);
+  }
+  .label {
+    background-color: rgba(255, 255, 255, 0.5);
+    padding: 3px 0;
+    border-radius: 0 0 10px 10px;
+  }
+</style>
+</head>
+<body>
+<div class="grid" id="grid"></div>
+
+<script>
+const grid = document.getElementById('grid');
+
+// Generate 80 distinct light colors
+for (let i = 0; i < 80; i++) {
+  // Step hues non-linearly to avoid similar colors
+  const hue = (i * 37) % 360; // evenly spaced but jumps around color wheel
+  const saturation = 40 + ((i * 7) % 40); // different intensities
+  const lightness = 70 + ((i * 11) % 20); // ensures light but varied
+
+  const color = `hsl(${hue}, ${saturation}%, ${lightness}%)`;
+
+  const div = document.createElement('div');
+  div.className = 'color-box';
+  div.style.backgroundColor = color;
+
+  const hex = hslToHex(hue, saturation, lightness);
+  div.innerHTML = `<div class="label">${hex}</div>`;
+  grid.appendChild(div);
+}
+
+// HSL → HEX converter
+function hslToHex(h, s, l) {
+  s /= 100;
+  l /= 100;
+  const k = n => (n + h / 30) % 12;
+  const a = s * Math.min(l, 1 - l);
+  const f = n =>
+    l - a * Math.max(-1, Math.min(k(n) - 3, Math.min(9 - k(n), 1)));
+  const toHex = x =>
+    Math.round(x * 255)
+      .toString(16)
+      .padStart(2, '0');
+  return `#${toHex(f(0))}${toHex(f(8))}${toHex(f(4))}`;
+}
+</script>
+</body>
+</html>
